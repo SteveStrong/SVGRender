@@ -4,7 +4,8 @@ using SVGRender.Services;
 namespace SVGRender.Components
 {
     public partial class LivingHingeGenerator : ComponentBase
-    {        [Inject] private LivingHingeService HingeService { get; set; } = default!;
+    {
+        [Inject] private LivingHingeService HingeService { get; set; } = default!;
         [Parameter] public EventCallback<string> OnFileGenerated { get; set; }
 
         protected LivingHingeService.HingeParameters CurrentParameters { get; set; } = new();
@@ -12,11 +13,13 @@ namespace SVGRender.Components
         protected string LastGeneratedFile { get; set; } = "";
         protected string StatusMessage { get; set; } = "";
         protected bool IsGenerating { get; set; } = false;
-        protected List<string> GeneratedFiles { get; set; } = new();        protected override void OnInitialized()
+        protected List<string> GeneratedFiles { get; set; } = new();
+        protected override void OnInitialized()
         {
             CurrentParameters = LivingHingeService.GetDefaultParameters();
             LoadGeneratedFiles();
-        }private async Task GenerateHinge()
+        }
+        private async Task GenerateHinge()
         {
             try
             {
