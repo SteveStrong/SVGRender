@@ -9,7 +9,8 @@ namespace SVGRender.Services
             public double Width { get; set; } = 200;
             public double Height { get; set; } = 100;
             public double SlitLength { get; set; } = 15;
-            public double SlitWidth { get; set; } = 1;            public double SlitSpacing { get; set; } = 3;
+            public double SlitWidth { get; set; } = 1;
+            public double SlitSpacing { get; set; } = 3;
             public double RowOffset { get; set; } = 8;
             public string MaterialColor { get; set; } = "#F5F5DC";
             public string CutColor { get; set; } = "#FF0000";
@@ -35,9 +36,7 @@ namespace SVGRender.Services
             }
 
             // Apply preset parameters based on hinge type
-            ApplyHingeTypePresets(parameters);
-
-            var svgContent = GenerateSvgContent(parameters);
+            ApplyHingeTypePresets(parameters);            var svgContent = GenerateSvgContent(parameters);
             var filePath = Path.Combine(_environment.WebRootPath, fileName);
 
             await File.WriteAllTextAsync(filePath, svgContent);
@@ -135,12 +134,10 @@ namespace SVGRender.Services
                     ? parameters.SlitSpacing + (parameters.SlitLength / 2) 
                     : parameters.SlitSpacing;
 
-                var currentX = offsetX;
-
-                // Generate slits for current row
+                var currentX = offsetX;                // Generate slits for current row
                 while (currentX + parameters.SlitLength < parameters.Width - 5)
                 {
-                    // Create a slit (vertical line)
+                    // Create a slit (horizontal cut line)
                     svg.AppendLine($"  <line x1=\"{currentX:F1}\" y1=\"{currentY:F1}\" x2=\"{currentX + parameters.SlitLength:F1}\" y2=\"{currentY:F1}\" class=\"cut-line\" />");
 
                     currentX += parameters.SlitLength + parameters.SlitSpacing;

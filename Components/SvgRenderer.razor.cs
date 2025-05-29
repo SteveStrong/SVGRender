@@ -53,12 +53,12 @@ namespace SVGRender.Components
                 var content = await File.ReadAllTextAsync(fullPath);
 
                 // Basic validation to ensure it's an SVG file
-                if (!content.TrimStart().StartsWith("<svg", StringComparison.OrdinalIgnoreCase))
-                {
-                    ErrorMessage = "File does not appear to be a valid SVG";
-                    SvgContent = null;
-                    return;
-                }
+                // if (!content.TrimStart().StartsWith("<svg", StringComparison.OrdinalIgnoreCase))
+                // {
+                //     ErrorMessage = "File does not appear to be a valid SVG";
+                //     SvgContent = null;
+                //     return;
+                // }
 
                 // Apply CSS class if provided
                 if (!string.IsNullOrEmpty(CssClass))

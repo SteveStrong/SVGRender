@@ -1,7 +1,25 @@
-<svg width="200" height="100" xmlns="http://www.w3.org/2000/svg">
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Living Hinge Pattern - Parametric Generation
+  Generated: 2025-05-28 23:00:51
+  All measurements in millimeters (mm)
+  
+  Parameters:
+    - Type: Standard
+    - Dimensions: 200mm × 100mm
+    - Slit Length: 15mm
+    - Slit Width: 1mm
+    - Slit Spacing: 3mm
+    - Row Offset: 8mm
+    - Alternate Rows: Yes
+    - Material Color: #F5F5DC
+    - Cut Color: #FF0000
+-->
+<svg width="200mm" height="100mm" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Living Hinge Pattern - All measurements in millimeters -->
   <defs>
     <style>
-      .material { fill: #8B4513; stroke: #654321; stroke-width: 0.5; }
+      .material { fill: #F5F5DC; stroke: #654321; stroke-width: 0.5; }
       .cut-line { fill: none; stroke: #FF0000; stroke-width: 1; }
       .hinge-info { font-family: Arial, sans-serif; font-size: 8px; fill: #333; }
     </style>
@@ -67,7 +85,7 @@
   <line x1="136.5" y1="50.0" x2="151.5" y2="50.0" class="cut-line" />
   <line x1="154.5" y1="50.0" x2="169.5" y2="50.0" class="cut-line" />
   <line x1="172.5" y1="50.0" x2="187.5" y2="50.0" class="cut-line" />
-  <text x="5" y="75" class="hinge-info">Living Hinge - Standard</text>
-  <text x="5" y="85" class="hinge-info">Slit: 15x1, Spacing: 3, Offset: 8</text>
-  <text x="5" y="95" class="hinge-info">Generated: 2025-05-28 21:59:34</text>
+  <text x="5" y="75" class="hinge-info">Living Hinge - Standard (200×100mm)</text>
+  <text x="5" y="85" class="hinge-info">Slit: 15×1mm, Spacing: 3mm, Row Offset: 8mm</text>
+  <text x="5" y="95" class="hinge-info">Generated: 2025-05-28 23:00:51 | Alternate Rows: Yes</text>
 </svg>

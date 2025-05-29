@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Living Hinge Pattern - Parametric Generation
+  Generated: 2025-05-28 23:05:16
+  All measurements in millimeters (mm)
+  
+  Parameters:
+    - Type: Standard
+    - Dimensions: 200mm × 100mm
+    - Slit Length: 26mm
+    - Slit Width: 1mm
+    - Slit Spacing: 5mm
+    - Row Offset: 12mm
+    - Alternate Rows: Yes
+    - Material Color: #F5F5DC
+    - Cut Color: #FF0000
+-->
+<svg width="200mm" height="100mm" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Living Hinge Pattern - All measurements in millimeters -->
+  <defs>
+    <style>
+      .material { fill: #F5F5DC; stroke: #654321; stroke-width: 0.5; }
+      .cut-line { fill: none; stroke: #FF0000; stroke-width: 1; }
+      .hinge-info { font-family: Arial, sans-serif; font-size: 8px; fill: #333; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="200" height="100" class="material" />
+  <line x1="5.0" y1="10.0" x2="31.0" y2="10.0" class="cut-line" />
+  <line x1="36.0" y1="10.0" x2="62.0" y2="10.0" class="cut-line" />
+  <line x1="67.0" y1="10.0" x2="93.0" y2="10.0" class="cut-line" />
+  <line x1="98.0" y1="10.0" x2="124.0" y2="10.0" class="cut-line" />
+  <line x1="129.0" y1="10.0" x2="155.0" y2="10.0" class="cut-line" />
+  <line x1="160.0" y1="10.0" x2="186.0" y2="10.0" class="cut-line" />
+  <line x1="18.0" y1="22.0" x2="44.0" y2="22.0" class="cut-line" />
+  <line x1="49.0" y1="22.0" x2="75.0" y2="22.0" class="cut-line" />
+  <line x1="80.0" y1="22.0" x2="106.0" y2="22.0" class="cut-line" />
+  <line x1="111.0" y1="22.0" x2="137.0" y2="22.0" class="cut-line" />
+  <line x1="142.0" y1="22.0" x2="168.0" y2="22.0" class="cut-line" />
+  <line x1="5.0" y1="34.0" x2="31.0" y2="34.0" class="cut-line" />
+  <line x1="36.0" y1="34.0" x2="62.0" y2="34.0" class="cut-line" />
+  <line x1="67.0" y1="34.0" x2="93.0" y2="34.0" class="cut-line" />
+  <line x1="98.0" y1="34.0" x2="124.0" y2="34.0" class="cut-line" />
+  <line x1="129.0" y1="34.0" x2="155.0" y2="34.0" class="cut-line" />
+  <line x1="160.0" y1="34.0" x2="186.0" y2="34.0" class="cut-line" />
+  <text x="5" y="75" class="hinge-info">Living Hinge - Standard (200×100mm)</text>
+  <text x="5" y="85" class="hinge-info">Slit: 26×1mm, Spacing: 5mm, Row Offset: 12mm</text>
+  <text x="5" y="95" class="hinge-info">Generated: 2025-05-28 23:05:16 | Alternate Rows: Yes</text>
+</svg>

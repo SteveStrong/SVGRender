@@ -33,7 +33,8 @@ namespace SVGRender.Components
                 if (OnFileGenerated.HasDelegate)
                 {
                     await OnFileGenerated.InvokeAsync(fileName);
-                }                LoadGeneratedFiles();
+                }
+                LoadGeneratedFiles();
                 CustomFileName = ""; // Clear custom filename after generation
             }
             catch (Exception ex)
