@@ -1,0 +1,23 @@
+@if (!string.IsNullOrEmpty(SvgContent))
+{
+    <div class="svg-container" style="@ContainerStyle">
+        @((MarkupString)SvgContent)
+    </div>
+}
+else if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @ErrorMessage
+    </div>
+}
+
+<style>
+    .svg-container {
+        display: inline-block;
+    }
+    
+    .svg-container svg {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
