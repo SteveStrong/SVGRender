@@ -13,19 +13,19 @@
                         <option value="@type.Key">@type.Value</option>
                     }
                 </select>
-            </div>
-
-            <div class="row">
+            </div>            <div class="row">
                 <div class="col-6">
                     <div class="form-group mb-2">
-                        <label class="form-label">Width:</label>
+                        <label class="form-label">Width (mm):</label>
                         <input type="number" class="form-control" @bind="CurrentParameters.Width" min="50" max="500" />
+                        <small class="form-text text-muted">Total width of the hinge</small>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="form-group mb-2">
-                        <label class="form-label">Height:</label>
+                        <label class="form-label">Height (mm):</label>
                         <input type="number" class="form-control" @bind="CurrentParameters.Height" min="50" max="300" />
+                        <small class="form-text text-muted">Total height of the hinge</small>
                     </div>
                 </div>
             </div>
@@ -33,14 +33,16 @@
             <div class="row">
                 <div class="col-6">
                     <div class="form-group mb-2">
-                        <label class="form-label">Slit Length:</label>
+                        <label class="form-label">Slit Length (mm):</label>
                         <input type="number" class="form-control" @bind="CurrentParameters.SlitLength" min="5" max="50" step="0.5" />
+                        <small class="form-text text-muted">Length of each cut</small>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="form-group mb-2">
-                        <label class="form-label">Slit Width:</label>
+                        <label class="form-label">Slit Width (mm):</label>
                         <input type="number" class="form-control" @bind="CurrentParameters.SlitWidth" min="0.5" max="5" step="0.1" />
+                        <small class="form-text text-muted">Width of cut line</small>
                     </div>
                 </div>
             </div>
@@ -48,14 +50,16 @@
             <div class="row">
                 <div class="col-6">
                     <div class="form-group mb-2">
-                        <label class="form-label">Slit Spacing:</label>
+                        <label class="form-label">Slit Spacing (mm):</label>
                         <input type="number" class="form-control" @bind="CurrentParameters.SlitSpacing" min="1" max="20" step="0.5" />
+                        <small class="form-text text-muted">Distance between cuts</small>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="form-group mb-2">
-                        <label class="form-label">Row Offset:</label>
+                        <label class="form-label">Row Offset (mm):</label>
                         <input type="number" class="form-control" @bind="CurrentParameters.RowOffset" min="3" max="30" step="0.5" />
+                        <small class="form-text text-muted">Vertical spacing between rows</small>
                     </div>
                 </div>
             </div>

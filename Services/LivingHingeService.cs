@@ -77,14 +77,32 @@ namespace SVGRender.Services
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             
             return $"hinge_{type}_{dimensions}_{slitInfo}_{spacing}_{offset}_{alternate}_{timestamp}";
-        }
-
-        private string GenerateSvgContent(HingeParameters parameters)
+        }        private string GenerateSvgContent(HingeParameters parameters)
         {
             var svg = new StringBuilder();
 
-            // SVG header
-            svg.AppendLine($"<svg width=\"{parameters.Width}\" height=\"{parameters.Height}\" xmlns=\"http://www.w3.org/2000/svg\">");
+            // Add comprehensive parameter documentation
+            svg.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            svg.AppendLine("<!--");
+            svg.AppendLine("  Living Hinge Pattern - Parametric Generation");
+            svg.AppendLine($"  Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+            svg.AppendLine("  All measurements in millimeters (mm)");
+            svg.AppendLine("  ");
+            svg.AppendLine("  Parameters:");
+            svg.AppendLine($"    - Type: {parameters.HingeType}");
+            svg.AppendLine($"    - Dimensions: {parameters.Width}mm × {parameters.Height}mm");
+            svg.AppendLine($"    - Slit Length: {parameters.SlitLength}mm");
+            svg.AppendLine($"    - Slit Width: {parameters.SlitWidth}mm");
+            svg.AppendLine($"    - Slit Spacing: {parameters.SlitSpacing}mm");
+            svg.AppendLine($"    - Row Offset: {parameters.RowOffset}mm");
+            svg.AppendLine($"    - Alternate Rows: {(parameters.AlternateRows ? "Yes" : "No")}");
+            svg.AppendLine($"    - Material Color: {parameters.MaterialColor}");
+            svg.AppendLine($"    - Cut Color: {parameters.CutColor}");
+            svg.AppendLine("-->");
+
+            // SVG header with units specified
+            svg.AppendLine($"<svg width=\"{parameters.Width}mm\" height=\"{parameters.Height}mm\" viewBox=\"0 0 {parameters.Width} {parameters.Height}\" xmlns=\"http://www.w3.org/2000/svg\">");
+            svg.AppendLine("  <!-- Living Hinge Pattern - All measurements in millimeters -->");
             svg.AppendLine("  <defs>");
             svg.AppendLine("    <style>");
             svg.AppendLine("      .material { fill: " + parameters.MaterialColor + "; stroke: #654321; stroke-width: 0.5; }");
@@ -99,10 +117,10 @@ namespace SVGRender.Services
             // Generate hinge pattern
             GenerateHingePattern(svg, parameters);
 
-            // Add title and parameters info
-            svg.AppendLine($"  <text x=\"5\" y=\"{parameters.Height - 25}\" class=\"hinge-info\">Living Hinge - {parameters.HingeType}</text>");
-            svg.AppendLine($"  <text x=\"5\" y=\"{parameters.Height - 15}\" class=\"hinge-info\">Slit: {parameters.SlitLength}x{parameters.SlitWidth}, Spacing: {parameters.SlitSpacing}, Offset: {parameters.RowOffset}</text>");
-            svg.AppendLine($"  <text x=\"5\" y=\"{parameters.Height - 5}\" class=\"hinge-info\">Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}</text>");
+            // Add title and parameters info with units
+            svg.AppendLine($"  <text x=\"5\" y=\"{parameters.Height - 25}\" class=\"hinge-info\">Living Hinge - {parameters.HingeType} ({parameters.Width}×{parameters.Height}mm)</text>");
+            svg.AppendLine($"  <text x=\"5\" y=\"{parameters.Height - 15}\" class=\"hinge-info\">Slit: {parameters.SlitLength}×{parameters.SlitWidth}mm, Spacing: {parameters.SlitSpacing}mm, Row Offset: {parameters.RowOffset}mm</text>");
+            svg.AppendLine($"  <text x=\"5\" y=\"{parameters.Height - 5}\" class=\"hinge-info\">Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss} | Alternate Rows: {(parameters.AlternateRows ? "Yes" : "No")}</text>");
 
             svg.AppendLine("</svg>");
 
@@ -154,14 +172,18 @@ namespace SVGRender.Services
             
             if (Directory.Exists(wwwrootPath))
             {
-                var svgFiles = Directory.GetFiles(wwwrootPath, "living_hinge_*.svg")
+                // Get both old and new naming patterns
+                var oldPatternFiles = Directory.GetFiles(wwwrootPath, "living_hinge_*.svg");
+                var newPatternFiles = Directory.GetFiles(wwwrootPath, "hinge_*.svg");
+                
+                var allHingeFiles = oldPatternFiles.Concat(newPatternFiles)
                     .Select(Path.GetFileName)
                     .Where(f => f != null)
                     .Cast<string>()
                     .OrderByDescending(f => f)
                     .ToList();
 
-                hingeFiles.AddRange(svgFiles);
+                hingeFiles.AddRange(allHingeFiles);
             }
 
             return hingeFiles;
