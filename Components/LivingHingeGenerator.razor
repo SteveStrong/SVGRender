@@ -1,0 +1,202 @@
+@using SVGRender.Services
+
+<div class="hinge-generator-container">
+    <div class="row">
+        <div class="col-md-4">
+            <h4>Living Hinge Generator</h4>
+            
+            <div class="form-group mb-3">
+                <label class="form-label">Hinge Type:</label>
+                <select class="form-select" @bind="CurrentParameters.HingeType">
+                    @foreach (var type in LivingHingeService.GetHingeTypes())
+                    {
+                        <option value="@type.Key">@type.Value</option>
+                    }
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group mb-2">
+                        <label class="form-label">Width:</label>
+                        <input type="number" class="form-control" @bind="CurrentParameters.Width" min="50" max="500" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group mb-2">
+                        <label class="form-label">Height:</label>
+                        <input type="number" class="form-control" @bind="CurrentParameters.Height" min="50" max="300" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group mb-2">
+                        <label class="form-label">Slit Length:</label>
+                        <input type="number" class="form-control" @bind="CurrentParameters.SlitLength" min="5" max="50" step="0.5" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group mb-2">
+                        <label class="form-label">Slit Width:</label>
+                        <input type="number" class="form-control" @bind="CurrentParameters.SlitWidth" min="0.5" max="5" step="0.1" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group mb-2">
+                        <label class="form-label">Slit Spacing:</label>
+                        <input type="number" class="form-control" @bind="CurrentParameters.SlitSpacing" min="1" max="20" step="0.5" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group mb-2">
+                        <label class="form-label">Row Offset:</label>
+                        <input type="number" class="form-control" @bind="CurrentParameters.RowOffset" min="3" max="30" step="0.5" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group mb-2">
+                        <label class="form-label">Material Color:</label>
+                        <input type="color" class="form-control" @bind="CurrentParameters.MaterialColor" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group mb-2">
+                        <label class="form-label">Cut Color:</label>
+                        <input type="color" class="form-control" @bind="CurrentParameters.CutColor" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" @bind="CurrentParameters.AlternateRows" id="alternateRows" />
+                <label class="form-check-label" for="alternateRows">Alternate Row Pattern</label>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Custom Filename (optional):</label>
+                <input type="text" class="form-control" @bind="CustomFileName" placeholder="my_hinge" />
+                <small class="form-text text-muted">Leave empty for auto-generated name</small>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" @onclick="GenerateHinge" disabled="@IsGenerating">
+                    @if (IsGenerating)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                        <text>Generating...</text>
+                    }
+                    else
+                    {
+                        <text>Generate Living Hinge</text>
+                    }
+                </button>
+                
+                @if (!string.IsNullOrEmpty(LastGeneratedFile))
+                {
+                    <button class="btn btn-success" @onclick="LoadIntoViewer">
+                        Load into Viewer
+                    </button>
+                }
+
+                <button class="btn btn-secondary" @onclick="ResetToDefaults">Reset to Defaults</button>
+            </div>
+
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="alert alert-info mt-3">
+                    @StatusMessage
+                </div>
+            }
+
+            @if (GeneratedFiles.Any())
+            {
+                <div class="mt-4">
+                    <h6>Previously Generated:</h6>
+                    <div class="list-group">
+                        @foreach (var file in GeneratedFiles.Take(5))
+                        {
+                            <a href="#" class="list-group-item list-group-item-action" @onclick="() => LoadSpecificFile(file)">
+                                @file
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-8">
+            @if (!string.IsNullOrEmpty(LastGeneratedFile))
+            {
+                <h5>Generated Living Hinge Preview</h5>
+                <div class="preview-container">
+                    <SvgRenderer FilePath="@LastGeneratedFile" 
+                                ContainerStyle="border: 2px solid #ddd; padding: 10px; background: white; border-radius: 5px;" />
+                </div>
+            }
+            else
+            {
+                <div class="preview-placeholder">
+                    <div class="text-center text-muted p-5">
+                        <i class="display-1">⚙️</i>
+                        <h5>Living Hinge Generator</h5>
+                        <p>Configure your parameters and click "Generate" to create a parametric living hinge pattern.</p>
+                        <small>Living hinges are flexible connections created by cutting specific patterns in sheet materials.</small>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .hinge-generator-container {
+        padding: 20px;
+    }
+
+    .preview-container {
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        background: #f8f9fa;
+    }
+
+    .preview-placeholder {
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.9rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+
+    .list-group-item {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+    }
+</style>
