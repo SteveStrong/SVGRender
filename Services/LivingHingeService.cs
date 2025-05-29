@@ -9,10 +9,9 @@ namespace SVGRender.Services
             public double Width { get; set; } = 200;
             public double Height { get; set; } = 100;
             public double SlitLength { get; set; } = 15;
-            public double SlitWidth { get; set; } = 1;
-            public double SlitSpacing { get; set; } = 3;
+            public double SlitWidth { get; set; } = 1;            public double SlitSpacing { get; set; } = 3;
             public double RowOffset { get; set; } = 8;
-            public string MaterialColor { get; set; } = "#8B4513";
+            public string MaterialColor { get; set; } = "#F5F5DC";
             public string CutColor { get; set; } = "#FF0000";
             public bool AlternateRows { get; set; } = true;
             public string HingeType { get; set; } = "Standard"; // Standard, Dense, Sparse, Custom
