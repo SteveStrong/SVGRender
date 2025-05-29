@@ -1,0 +1,14 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="hexPattern" patternUnits="userSpaceOnUse" width="20" height="17.32">
+      <rect width="20" height="17.32" fill="#e8f4fd"/>
+      <circle cx="10" cy="8.66" r="2" fill="#3498db" opacity="0.5"/>
+    </pattern>
+  </defs>
+  <polygon points="100,20 160,55 160,125 100,160 40,125 40,55" 
+           fill="url(#hexPattern)" stroke="#2980b9" stroke-width="4"/>
+  <polygon points="100,40 140,65 140,115 100,140 60,115 60,65" 
+           fill="#3498db" opacity="0.8"/>
+  <text x="100" y="105" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">HEX</text>
+  <text x="100" y="185" text-anchor="middle" fill="#2980b9" font-family="Arial" font-size="12">HEXAGON</text>
+</svg>

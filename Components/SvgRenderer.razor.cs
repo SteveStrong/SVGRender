@@ -13,6 +13,16 @@ namespace SVGRender.Components
         private string? SvgContent { get; set; }
         private string? ErrorMessage { get; set; }
 
+        // Available SVG files for selection
+        public static readonly Dictionary<string, string> AvailableSvgFiles = new()
+        {
+            { "sample.svg", "Sample (Circle & Rectangle)" },
+            { "triangle.svg", "Triangle with Gradient" },
+            { "star.svg", "Golden Star" },
+            { "hexagon.svg", "Patterned Hexagon" },
+            { "arrow.svg", "Direction Arrow" }
+        };
+
         protected override async Task OnParametersSetAsync()
         {
             await LoadSvgFile();

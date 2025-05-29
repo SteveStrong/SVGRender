@@ -5,25 +5,26 @@
 
 <h1>SVG Renderer Demo</h1>
 
-<div class="row">
-    <div class="col-md-6">
-        <h3>Sample SVG File</h3>
-        <p>Rendering a local SVG file from wwwroot/sample.svg:</p>        <SvgRenderer FilePath="sample.svg" 
-                     ContainerStyle="border: 2px solid #ccc; padding: 20px; border-radius: 8px;" />
-    </div>
-    
-    <div class="col-md-6">
-        <h3>Usage Example</h3>
-        <p>To use the SVG renderer component:</p>        <pre><code>&lt;SvgRenderer FilePath="your-file.svg" 
+<SvgSelector />
+
+<div class="row mt-5">
+    <div class="col-12">
+        <h3>Usage Information</h3>
+        <div class="alert alert-info">
+            <h5>SVG Renderer Component Features:</h5>
+            <ul class="mb-0">
+                <li><strong>Pure C# Implementation</strong> - No JavaScript required</li>
+                <li><strong>Multiple SVG Files</strong> - Choose from 5 different SVG designs</li>
+                <li><strong>Custom Styling</strong> - Apply container styles and CSS classes</li>
+                <li><strong>Error Handling</strong> - Displays helpful error messages</li>
+                <li><strong>Responsive Design</strong> - SVGs automatically scale to fit containers</li>
+            </ul>
+        </div>
+        
+        <h5>Component Usage:</h5>
+        <pre><code>&lt;SvgRenderer FilePath="your-file.svg" 
              ContainerStyle="your-styles" 
              CssClass="your-css-class" /&gt;</code></pre>
-        
-        <h4>Parameters:</h4>
-        <ul>
-            <li><strong>FilePath</strong>: Path to the SVG file relative to wwwroot (required)</li>
-            <li><strong>ContainerStyle</strong>: CSS styles for the container div (optional)</li>
-            <li><strong>CssClass</strong>: CSS class to add to the SVG element (optional)</li>
-        </ul>
     </div>
 </div>
 
