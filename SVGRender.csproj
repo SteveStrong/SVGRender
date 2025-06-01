@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ApprenticeFoundryMentorModeler" Version="18.4.5" />
+  </ItemGroup>
+
 </Project>
