@@ -4,30 +4,84 @@
 <PageTitle>SVG Render Demo</PageTitle>
 
 <h1>SVG Renderer Demo</h1>
+<p class="lead">A comprehensive tool for generating parametric living hinges and rendering SVG graphics.</p>
 
-<SvgSelector />
-
+<!-- Generator Selection Cards -->
 <div class="row mt-4">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <span class="oi oi-wrench" aria-hidden="true"></span> Living Hinge Generator
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Create parametric living hinges with precise control over dimensions, slit patterns, and layout options.</p>
+                <ul class="list-unstyled">
+                    <li>✓ Manual parameter control</li>
+                    <li>✓ Real-time preview</li>
+                    <li>✓ SVG export</li>
+                    <li>✓ Multiple pattern types</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="/living-hinge" class="btn btn-primary">
+                    <span class="oi oi-arrow-right" aria-hidden="true"></span> Open Generator
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <span class="oi oi-lightbulb" aria-hidden="true"></span> Knowledge-Based Generator
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">AI-driven hinge generation using intelligent knowledge base with preset configurations and optimization.</p>
+                <ul class="list-unstyled">
+                    <li>✓ Smart presets</li>
+                    <li>✓ Parameter validation</li>
+                    <li>✓ Calculated metrics</li>
+                    <li>✓ Instance management</li>
+                </ul>
+            </div>
+            <div class="card-footer">
+                <a href="/knowledge-hinge" class="btn btn-success">
+                    <span class="oi oi-arrow-right" aria-hidden="true"></span> Open Generator
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SVG Selector Section -->
+<div class="row mt-5">
     <div class="col-12">
-        <LivingHingeGenerator />
+        <h3>SVG File Viewer</h3>
+        <p>Browse and preview existing SVG files in your collection.</p>
+        <SvgSelector />
     </div>
 </div>
 
 <div class="row mt-5">
     <div class="col-12">
-        <h3>Usage Information</h3>
+        <h3>About This Application</h3>
         <div class="alert alert-info">
             <h5>SVG Renderer Component Features:</h5>
             <ul class="mb-0">
                 <li><strong>Pure C# Implementation</strong> - No JavaScript required</li>
-                <li><strong>Multiple SVG Files</strong> - Choose from 5 different SVG designs</li>
+                <li><strong>Multiple SVG Files</strong> - Choose from various SVG designs</li>
                 <li><strong>Custom Styling</strong> - Apply container styles and CSS classes</li>
                 <li><strong>Error Handling</strong> - Displays helpful error messages</li>
                 <li><strong>Responsive Design</strong> - SVGs automatically scale to fit containers</li>
             </ul>
         </div>
         
-        <h5>Component Usage:</h5>        <pre><code>&lt;SvgRenderer FilePath="your-file.svg" 
+        <h5>Component Usage:</h5>        
+        <pre><code>&lt;SvgRenderer FilePath="your-file.svg" 
              ContainerStyle="your-styles" 
              CssClass="your-css-class" /&gt;</code></pre>
     </div>
