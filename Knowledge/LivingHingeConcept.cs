@@ -11,47 +11,28 @@ namespace SVGRender.Knowledge
     {
         public LivingHingeConcept() : base("LivingHinge")
         {
-            //InitializeHingeKnowledge();
+            InitializeHingeKnowledge();
         }
 
         private void InitializeHingeKnowledge()
         {
             // Define calculation formulas for hinge parameters
-            // These will automatically create KnVariable objects
-
+            // These will automatically create KnVariable objects            
             Calculations([
-                "Length=100",
-                "Width=50",
-                "MaterialThickness=3",
-                "SlitLength=15",
-                "SlitWidth=1.0",
-                "SlitSpacing=3",
-                "RowOffset=8",
-                "NumberOfRows=(Width - 20) / RowOffset",
-                "SlitsPerRow=(Length - 10) / (SlitLength + SlitSpacing)",
-                "TotalArea=Length * Width",
-                "FlexibilityFactor=(SlitLength * SlitsPerRow * NumberOfRows) / TotalArea",
-                "MaterialColor='#F5F5DC'",
-                "CutColor='#FF0000'",
-                "AlternateRows=1"
-            ]);
-
-            // Define units for measurements
-            Units([
-                "Length:mm",
-                "Width:mm",
-                "MaterialThickness:mm",
-                "SlitLength:mm",
-                "SlitWidth:mm",
-                "SlitSpacing:mm",
-                "RowOffset:mm",
-                "NumberOfRows:count",
-                "SlitsPerRow:count",
-                "TotalArea:mm2",
-                "FlexibilityFactor:ratio",
-                "MaterialColor:color",
-                "CutColor:color",
-                "AlternateRows:boolean"
+                "Length|mm: 100",
+                "Width|mm: 50",
+                "MaterialThickness|mm: 3",
+                "SlitLength|mm: 15",
+                "SlitWidth|mm: 1.0",
+                "SlitSpacing|mm: 3",
+                "RowOffset|mm: 8",
+                "NumberOfRows: (Width - 20) / RowOffset",
+                "SlitsPerRow: (Length - 10) / (SlitLength + SlitSpacing)",
+                "TotalArea|mm2: Length * Width",
+                "FlexibilityFactor: (SlitLength * SlitsPerRow * NumberOfRows) / TotalArea",
+                "MaterialColor|color: '#F5F5DC' ",
+                "CutColor|color: '#FF0000'",
+                "AlternateRows: 1",
             ]);
         }        
 

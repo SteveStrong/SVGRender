@@ -1,0 +1,13 @@
+<svg width="NaN" height="NaN" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .hinge-material { fill: LocalReference NOT FOUND: [MaterialColor] on instance [hinge_Sparse_20250601_150005]; stroke: #333; stroke-width: 0.5; }
+      .hinge-cut { stroke: LocalReference NOT FOUND: [CutColor] on instance [hinge_Sparse_20250601_150005]; stroke-width: NaN; }
+    </style>
+  </defs>
+  <rect x="10" y="10" width="NaN" height="NaN" class="hinge-material"/>
+  <line x1="10" y1="NaN" x2="NaN" y2="NaN" stroke="#666" stroke-width="0.5"/>
+  <text x="NaN" y="NaN" text-anchor="middle" font-size="8" fill="#666">NaNmm</text>
+  <line x1="5" y1="10" x2="5" y2="NaN" stroke="#666" stroke-width="0.5"/>
+  <text x="0" y="NaN" text-anchor="middle" font-size="8" fill="#666" transform="rotate(-90, 0, NaN)">NaNmm</text>
+</svg>

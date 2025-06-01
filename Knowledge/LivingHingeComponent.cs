@@ -1,4 +1,6 @@
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using FoundryMentorModeler.Model;
 
 namespace SVGRender.Knowledge
@@ -12,6 +14,21 @@ namespace SVGRender.Knowledge
         public LivingHingeComponent(string name) 
             : base(name)
         {
+        }
+
+        private static JsonSerializerOptions JsonOptions = new()
+        {
+            IncludeFields = false,
+            IgnoreReadOnlyFields = true,
+            AllowTrailingCommas = true,
+            PropertyNameCaseInsensitive = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = true,
+        };
+
+        public string ToJSON()
+        {
+            return JsonSerializer.Serialize(this, typeof(LivingHingeComponent), JsonOptions);
         }
 
         public List<KnParameter> GetParameters()
@@ -43,7 +60,6 @@ namespace SVGRender.Knowledge
         public void UpdateParameter(string parameterName, object value)
         {
             SetValueOf(parameterName, value);
-            SmashValueOf(parameterName); // Force recalculation of dependent values
         }
 
         /// <summary>
@@ -175,26 +191,61 @@ namespace SVGRender.Knowledge
             return svg.ToString();
         }
 
-        /// <summary>
-        /// Gets a summary of the current hinge parameters
-        /// </summary>
-        public Dictionary<string, object> GetParameterSummary()
+       public LivingHingeComponent? CreatePresetHinge(string presetName)
         {
-            return new Dictionary<string, object>
+            var instance = this;
+
+            try
             {
-                ["Length"] = GetParameterValue("Length"),
-                ["Width"] = GetParameterValue("Width"),
-                ["Material Thickness"] = GetParameterValue("MaterialThickness"),
-                ["Slit Length"] = GetParameterValue("SlitLength"),
-                ["Slit Spacing"] = GetParameterValue("SlitSpacing"),
-                ["Row Offset"] = GetParameterValue("RowOffset"),
-                ["Number of Rows"] = (int)GetParameterValue("NumberOfRows"),
-                ["Slits per Row"] = (int)GetParameterValue("SlitsPerRow"),
-                ["Total Area"] = GetParameterValue("TotalArea"),
-                ["Flexibility Factor"] = GetParameterValue("FlexibilityFactor"),
-                ["Alternate Rows"] = GetParameterValue("AlternateRows") > 0
-            };
+                switch (presetName.ToLower())
+                {
+                    case "standard":
+                        instance.UpdateParameter("Length", 100.0);
+                        instance.UpdateParameter("Width", 50.0);
+                        instance.UpdateParameter("SlitLength", 15.0);
+                        instance.UpdateParameter("SlitSpacing", 3.0);
+                        instance.UpdateParameter("RowOffset", 8.0);
+                        break;
+
+                    case "dense":
+                        instance.UpdateParameter("Length", 80.0);
+                        instance.UpdateParameter("Width", 40.0);
+                        instance.UpdateParameter("SlitLength", 12.0);
+                        instance.UpdateParameter("SlitSpacing", 2.0);
+                        instance.UpdateParameter("RowOffset", 6.0);
+                        break;
+
+                    case "sparse":
+                        instance.UpdateParameter("Length", 150.0);
+                        instance.UpdateParameter("Width", 75.0);
+                        instance.UpdateParameter("SlitLength", 20.0);
+                        instance.UpdateParameter("SlitSpacing", 5.0);
+                        instance.UpdateParameter("RowOffset", 12.0);
+                        break;
+
+                    case "flexible":
+                        instance.UpdateParameter("Length", 120.0);
+                        instance.UpdateParameter("Width", 60.0);
+                        instance.UpdateParameter("SlitLength", 25.0);
+                        instance.UpdateParameter("SlitSpacing", 2.5);
+                        instance.UpdateParameter("RowOffset", 7.0);
+                        break;
+
+                    default:
+                        // Keep default values from concept
+                        break;
+                }
+
+                return instance;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to create preset hinge '{presetName}': {ex.Message}");
+                return instance; // Return with default values
+            }
         }
+
+
 
         /// <summary>
         /// Validates that all parameters have valid values

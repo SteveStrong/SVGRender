@@ -1,173 +1,220 @@
 using Microsoft.AspNetCore.Components;
-using SVGRender.Knowledge;
 using SVGRender.Services;
+using SVGRender.Knowledge;
+using System.Text;
 
 namespace SVGRender.Components
 {
     public partial class KnowledgeHingeGenerator : ComponentBase
     {
         [Inject] private KnowledgeHingeService KnowledgeService { get; set; } = default!;
-        
+        [Inject] private LivingHingeService HingeService { get; set; } = default!;
         [Parameter] public EventCallback<string> OnFileGenerated { get; set; }
 
-        private LivingHingeComponent? _currentHinge;
-        private string _instanceName = "";
-        private string _previewSvg = "";
-        private List<string> _availablePresets = new();
-        private List<string> _validationErrors = new();
-        private Timer? _debounceTimer;
+        protected string SelectedPreset { get; set; } = "";
+        protected string InstanceName { get; set; } = "";
+        protected LivingHingeComponent? CurrentHingeInstance { get; set; }
+        protected string StatusMessage { get; set; } = "";
+        protected bool IsCreating { get; set; } = false;
+        protected bool IsGenerating { get; set; } = false;
+        protected string GeneratedSVGFile { get; set; } = "";
+        protected List<string> ValidationErrors { get; set; } = new();
+        protected List<string> AvailablePresets { get; set; } = new();
 
         protected override void OnInitialized()
         {
-            _availablePresets = KnowledgeService.GetAvailablePresets();
-            CreateNewInstance();
+            AvailablePresets = KnowledgeService.GetAvailablePresets();
         }
 
-        private void CreateNewInstance()
+        protected void OnPresetChanged(ChangeEventArgs e)
+        {
+            SelectedPreset = e.Value?.ToString() ?? "";
+            ValidationErrors.Clear();
+            StatusMessage = string.IsNullOrEmpty(SelectedPreset)
+                ? ""
+                : $"Selected preset: {SelectedPreset}";
+            StateHasChanged();
+        }
+        
+        public string RenderAsJson()
+        {
+            if (CurrentHingeInstance == null) return "{}";
+
+            try
+            {
+                // Serialize the current hinge instance to JSON
+                
+                return CurrentHingeInstance.ToJSON();
+            }
+            catch (Exception ex)
+            {
+                ValidationErrors.Add($"Error serializing instance: {ex.Message}");
+                return "{}";
+            }
+        }
+        protected void CreateHingeInstance()
         {
             try
             {
-                var name = string.IsNullOrEmpty(_instanceName) ? $"Hinge_{DateTime.Now:HHmmss}" : _instanceName;
-                _currentHinge = KnowledgeService.CreateHingeInstance(name);
-                
-                if (_currentHinge != null)
+                IsCreating = true;
+                ValidationErrors.Clear();
+                StatusMessage = "Creating hinge instance...";
+                StateHasChanged();
+
+                if (string.IsNullOrEmpty(SelectedPreset))
                 {
-                    ValidateParameters();
-                    GeneratePreview();
+                    ValidationErrors.Add("Please select a preset configuration.");
+                    return;
                 }
-                
+
+                // Create hinge instance using the knowledge service
+                var instanceName = string.IsNullOrEmpty(InstanceName)
+                    ? $"hinge_{SelectedPreset}_{DateTime.Now:yyyyMMdd_HHmmss}"
+                    : InstanceName;
+
+                CurrentHingeInstance = KnowledgeService.CreatePresetHinge(SelectedPreset, instanceName);
+
+                if (CurrentHingeInstance == null)
+                {
+                    ValidationErrors.Add("Failed to create hinge instance.");
+                    return;
+                }
+
+
+
+                // Validate the instance
+                var validationResults = CurrentHingeInstance.ValidateParameters();
+                if (validationResults.Any())
+                {
+                    ValidationErrors.AddRange(validationResults);
+                }
+
+                StatusMessage = $"Successfully created hinge instance: {CurrentHingeInstance.Name}";
+            }
+            catch (Exception ex)
+            {
+                ValidationErrors.Add($"Error creating hinge instance: {ex.Message}");
+                StatusMessage = "Failed to create hinge instance";
+            }
+            finally
+            {
+                IsCreating = false;
                 StateHasChanged();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error creating hinge instance: {ex.Message}");
-            }
         }
 
-        private void OnPresetChanged(ChangeEventArgs e)
+        protected async Task GenerateSVG()
         {
-            var presetName = e.Value?.ToString();
-            if (!string.IsNullOrEmpty(presetName))
-            {
-                try
-                {
-                    var name = string.IsNullOrEmpty(_instanceName) ? $"{presetName}_{DateTime.Now:HHmmss}" : _instanceName;
-                    _currentHinge = KnowledgeService.CreatePresetHinge(presetName, name);
-                    
-                    if (_currentHinge != null)
-                    {
-                        ValidateParameters();
-                        GeneratePreview();
-                    }
-                    
-                    StateHasChanged();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error creating preset hinge: {ex.Message}");
-                }
-            }
-        }
-
-        private void UpdateParameter(string parameterName, object? value)
-        {
-            if (_currentHinge == null || value == null) return;
+            if (CurrentHingeInstance == null) return;
 
             try
             {
-                // Convert value to appropriate type
-                object convertedValue = value;
-                if (value is string strValue && double.TryParse(strValue, out double numValue))
-                {
-                    convertedValue = numValue;
-                }
+                IsGenerating = true;
+                StatusMessage = "Generating SVG...";
+                StateHasChanged();
 
-                _currentHinge.UpdateParameter(parameterName, convertedValue);
+                // Generate the SVG using the hinge instance
+                var svgContent = CurrentHingeInstance.GenerateSVG();
                 
-                // Debounce validation and preview generation
-                _debounceTimer?.Dispose();
-                _debounceTimer = new Timer((_) =>
-                {
-                    InvokeAsync(() =>
-                    {
-                        ValidateParameters();
-                        if (!_validationErrors.Any())
-                        {
-                            GeneratePreview();
-                        }
-                        StateHasChanged();
-                    });
-                }, null, 300, Timeout.Infinite);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error updating parameter {parameterName}: {ex.Message}");
-            }
-        }
+                // Save to file
+                var fileName = await CurrentHingeInstance.SaveSVGToFile("wwwroot");
+                GeneratedSVGFile = fileName;
 
-        private void ValidateParameters()
-        {
-            if (_currentHinge == null)
-            {
-                _validationErrors = new List<string> { "No hinge instance available" };
-                return;
-            }
+                StatusMessage = $"Successfully generated SVG: {fileName}";
 
-            try
-            {
-                _validationErrors = _currentHinge.ValidateParameters();
-            }
-            catch (Exception ex)
-            {
-                _validationErrors = new List<string> { $"Validation error: {ex.Message}" };
-            }
-        }
-
-        private void GeneratePreview()
-        {
-            if (_currentHinge == null || _validationErrors.Any())
-            {
-                _previewSvg = "";
-                return;
-            }
-
-            try
-            {
-                _previewSvg = _currentHinge.GeneratePreviewSVG(0.3); // Scale down for preview
-            }
-            catch (Exception ex)
-            {
-                _previewSvg = $"<svg><text x='10' y='20' fill='red'>Preview Error: {ex.Message}</text></svg>";
-                Console.WriteLine($"Error generating preview: {ex.Message}");
-            }
-        }
-
-        private async Task GenerateAndSave()
-        {
-            if (_currentHinge == null || _validationErrors.Any()) return;
-
-            try
-            {
-                var filename = await _currentHinge.SaveSVGToFile("wwwroot");
-                
                 // Notify parent component
                 if (OnFileGenerated.HasDelegate)
                 {
-                    await OnFileGenerated.InvokeAsync(filename);
+                    await OnFileGenerated.InvokeAsync(fileName);
                 }
-
-                // Show success message (you might want to inject a toast service)
-                Console.WriteLine($"SVG saved as: {filename}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error saving SVG: {ex.Message}");
+                ValidationErrors.Add($"Error generating SVG: {ex.Message}");
+                StatusMessage = "Failed to generate SVG";
+            }
+            finally
+            {
+                IsGenerating = false;
+                StateHasChanged();
             }
         }
 
-        public void Dispose()
+        /// <summary>
+        /// Generates the detailed information about the hinge instance for the pre tag
+        /// </summary>
+        protected string GetHingeInstanceDetails()
         {
-            _debounceTimer?.Dispose();
+            if (CurrentHingeInstance == null) return "";
+
+            var details = new StringBuilder();
+
+            try
+            {
+                details.AppendLine("=== KNOWLEDGE-BASED LIVING HINGE INSTANCE ===");
+                details.AppendLine($"Instance Name: {CurrentHingeInstance.Name}");
+                details.AppendLine($"Preset Configuration: {SelectedPreset}");
+                details.AppendLine($"Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                details.AppendLine();
+
+                details.AppendLine("--- PARAMETERS ---");
+                
+                // Get parameter summary
+                var parameterSummary = CurrentHingeInstance.GetParameters();
+                foreach (var param in parameterSummary)
+                {
+                    details.AppendLine($"{param.Key}: {param.CurrentValue} {param.GetUnits()}");
+                }
+
+                details.AppendLine();
+                details.AppendLine("--- CALCULATED VALUES ---");
+                
+                // Get specific calculated parameters
+                details.AppendLine($"Length: {CurrentHingeInstance.GetParameterValue("Length"):F2} mm");
+                details.AppendLine($"Width: {CurrentHingeInstance.GetParameterValue("Width"):F2} mm");
+                details.AppendLine($"Material Thickness: {CurrentHingeInstance.GetParameterValue("MaterialThickness"):F2} mm");
+                details.AppendLine($"Slit Length: {CurrentHingeInstance.GetParameterValue("SlitLength"):F2} mm");
+                details.AppendLine($"Slit Width: {CurrentHingeInstance.GetParameterValue("SlitWidth"):F2} mm");
+                details.AppendLine($"Slit Spacing: {CurrentHingeInstance.GetParameterValue("SlitSpacing"):F2} mm");
+                details.AppendLine($"Row Offset: {CurrentHingeInstance.GetParameterValue("RowOffset"):F2} mm");
+                details.AppendLine($"Number of Rows: {(int)CurrentHingeInstance.GetParameterValue("NumberOfRows")}");
+                details.AppendLine($"Slits per Row: {(int)CurrentHingeInstance.GetParameterValue("SlitsPerRow")}");
+                details.AppendLine($"Total Area: {CurrentHingeInstance.GetParameterValue("TotalArea"):F2} mm²");
+                details.AppendLine($"Flexibility Factor: {CurrentHingeInstance.GetParameterValue("FlexibilityFactor"):F4}");
+                details.AppendLine($"Material Color: {CurrentHingeInstance.GetParameterString("MaterialColor")}");
+                details.AppendLine($"Cut Color: {CurrentHingeInstance.GetParameterString("CutColor")}");
+                details.AppendLine($"Alternate Rows: {(CurrentHingeInstance.GetParameterValue("AlternateRows") > 0 ? "Yes" : "No")}");
+
+                details.AppendLine();
+                details.AppendLine("--- ADVANCED INFORMATION ---");
+                details.AppendLine($"Knowledge Model: LivingHingeConcept");
+                details.AppendLine($"Component Type: {CurrentHingeInstance.GetType().Name}");
+                details.AppendLine($"Preset Applied: {SelectedPreset}");
+                
+                // Add computational formula information
+                details.AppendLine();
+                details.AppendLine("--- CALCULATION FORMULAS ---");
+                details.AppendLine("NumberOfRows = (Width - 20) / RowOffset");
+                details.AppendLine("SlitsPerRow = (Length - 10) / (SlitLength + SlitSpacing)");
+                details.AppendLine("TotalArea = Length * Width");
+                details.AppendLine("FlexibilityFactor = (SlitLength * SlitsPerRow * NumberOfRows) / TotalArea");
+
+                if (ValidationErrors.Any())
+                {
+                    details.AppendLine();
+                    details.AppendLine("--- VALIDATION WARNINGS ---");
+                    foreach (var error in ValidationErrors)
+                    {
+                        details.AppendLine($"⚠ {error}");
+                    }
+                }
+
+                return details.ToString();
+            }
+            catch (Exception ex)
+            {
+                return $"Error generating instance details: {ex.Message}";
+            }
         }
     }
 }

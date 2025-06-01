@@ -1,242 +1,157 @@
-@using SVGRender.Knowledge
 @using SVGRender.Services
+@using SVGRender.Knowledge
+@using SVGRender.Components
 
-<div class="knowledge-hinge-generator">
-    <div class="card">
-        <div class="card-header">
-            <h4 class="mb-0">🧠 Knowledge-Based Living Hinge Generator</h4>
-        </div>
-        <div class="card-body">
-            
-            <!-- Preset Selection -->
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <label class="form-label">Preset Configuration:</label>
-                    <select class="form-select" @onchange="OnPresetChanged">
-                        <option value="">-- Custom --</option>
-                        @foreach (var preset in _availablePresets)
-                        {
-                            <option value="@preset">@preset</option>
-                        }
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Instance Name:</label>
-                    <input type="text" class="form-control" @bind="_instanceName" placeholder="Enter hinge name" />
-                </div>
+<div class="knowledge-hinge-generator-container">
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Knowledge-Based Hinge Generator</h4>
+              <div class="form-group mb-3">
+                <label class="form-label">Preset Configuration:</label>
+                <select class="form-select" @onchange="OnPresetChanged" value="@SelectedPreset">
+                    <option value="">Select a preset...</option>
+                    @foreach (var preset in AvailablePresets)
+                    {
+                        <option value="@preset">@preset</option>
+                    }
+                </select>
             </div>
 
-            <!-- Parameter Grid -->
-            @if (_currentHinge != null)
-            {
-                <div class="parameter-grid">
-                    <h5>Parameters</h5>
-                    <div class="row g-3">
-                        <!-- Basic Dimensions -->
-                        <div class="col-md-4">
-                            <label class="form-label">Length (mm):</label>
-                            <input type="number" step="0.1" class="form-control" 
-                                   value="@_currentHinge.GetParameterValue("Length")" 
-                                   @oninput="@(e => UpdateParameter("Length", e.Value))" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Width (mm):</label>
-                            <input type="number" step="0.1" class="form-control" 
-                                   value="@_currentHinge.GetParameterValue("Width")" 
-                                   @oninput="@(e => UpdateParameter("Width", e.Value))" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Material Thickness (mm):</label>
-                            <input type="number" step="0.1" class="form-control" 
-                                   value="@_currentHinge.GetParameterValue("MaterialThickness")" 
-                                   @oninput="@(e => UpdateParameter("MaterialThickness", e.Value))" />
-                        </div>
+            <div class="form-group mb-3">
+                <label class="form-label">Instance Name (optional):</label>
+                <input type="text" class="form-control" @bind="InstanceName" placeholder="my_hinge_instance" />
+            </div>
 
-                        <!-- Slit Parameters -->
-                        <div class="col-md-4">
-                            <label class="form-label">Slit Length (mm):</label>
-                            <input type="number" step="0.1" class="form-control" 
-                                   value="@_currentHinge.GetParameterValue("SlitLength")" 
-                                   @oninput="@(e => UpdateParameter("SlitLength", e.Value))" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Slit Width (mm):</label>
-                            <input type="number" step="0.1" class="form-control" 
-                                   value="@_currentHinge.GetParameterValue("SlitWidth")" 
-                                   @oninput="@(e => UpdateParameter("SlitWidth", e.Value))" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Slit Spacing (mm):</label>
-                            <input type="number" step="0.1" class="form-control" 
-                                   value="@_currentHinge.GetParameterValue("SlitSpacing")" 
-                                   @oninput="@(e => UpdateParameter("SlitSpacing", e.Value))" />
-                        </div>
-
-                        <!-- Layout Parameters -->
-                        <div class="col-md-4">
-                            <label class="form-label">Row Offset (mm):</label>
-                            <input type="number" step="0.1" class="form-control" 
-                                   value="@_currentHinge.GetParameterValue("RowOffset")" 
-                                   @oninput="@(e => UpdateParameter("RowOffset", e.Value))" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Material Color:</label>
-                            <input type="color" class="form-control form-control-color" 
-                                   value="@_currentHinge.GetParameterString("MaterialColor")" 
-                                   @oninput="@(e => UpdateParameter("MaterialColor", e.Value))" />
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Cut Color:</label>
-                            <input type="color" class="form-control form-control-color" 
-                                   value="@_currentHinge.GetParameterString("CutColor")" 
-                                   @oninput="@(e => UpdateParameter("CutColor", e.Value))" />
-                        </div>
-
-                        <!-- Toggle Parameters -->
-                        <div class="col-md-4">
-                            <div class="form-check">                                
-                                <input type="checkbox" class="form-check-input" 
-                                       checked="@(_currentHinge.GetParameterValue("AlternateRows") > 0)" 
-                                       @onchange="@(e => UpdateParameter("AlternateRows", (e.Value as bool? ?? false) ? 1 : 0))" />
-                                <label class="form-check-label">Alternate Rows</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Calculated Values Display -->
-                <div class="calculated-values mt-4">
-                    <h5>Calculated Values</h5>
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <div class="calc-value-card">
-                                <span class="calc-label">Number of Rows:</span>
-                                <span class="calc-value">@((int)_currentHinge.GetParameterValue("NumberOfRows"))</span>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="calc-value-card">
-                                <span class="calc-label">Slits per Row:</span>
-                                <span class="calc-value">@((int)_currentHinge.GetParameterValue("SlitsPerRow"))</span>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="calc-value-card">
-                                <span class="calc-label">Total Area:</span>
-                                <span class="calc-value">@_currentHinge.GetParameterValue("TotalArea").ToString("F1") mm²</span>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="calc-value-card">
-                                <span class="calc-label">Flexibility:</span>
-                                <span class="calc-value">@_currentHinge.GetParameterValue("FlexibilityFactor").ToString("F3")</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Validation Errors -->
-                @if (_validationErrors.Any())
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" @onclick="CreateHingeInstance" disabled="@IsCreating">
+                    @if (IsCreating)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                        <text>Creating...</text>
+                    }
+                    else
+                    {
+                        <text>Create Hinge Instance</text>
+                    }
+                </button>
+                
+                @if (CurrentHingeInstance != null)
                 {
-                    <div class="alert alert-warning mt-3">
-                        <h6>⚠️ Validation Issues:</h6>
-                        <ul class="mb-0">
-                            @foreach (var error in _validationErrors)
-                            {
-                                <li>@error</li>
-                            }
-                        </ul>
+                    <button class="btn btn-success" @onclick="GenerateSVG" disabled="@IsGenerating">
+                        @if (IsGenerating)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                            <text>Generating SVG...</text>
+                        }
+                        else
+                        {
+                            <text>Generate SVG</text>
+                        }
+                    </button>
+                }
+            </div>
+
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="alert alert-info mt-3">
+                    @StatusMessage
+                </div>
+            }
+
+            @if (ValidationErrors.Any())
+            {
+                <div class="alert alert-warning mt-3">
+                    <strong>Validation Errors:</strong>
+                    <ul class="mb-0">
+                        @foreach (var error in ValidationErrors)
+                        {
+                            <li>@error</li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+
+        <div>
+            <h5>Generated JSON</h5>
+            <p class="text-muted">This JSON represents the hinge instance parameters and can be used for further processing or storage.</p>
+            <pre>@RenderAsJson()</pre>
+        </div>
+
+        <div class="col-md-6">
+            @if (CurrentHingeInstance != null)
+            {
+                <h5>Hinge Instance Details</h5>
+                <pre class="knowledge-hinge-details">@GetHingeInstanceDetails()</pre>
+                
+                @if (!string.IsNullOrEmpty(GeneratedSVGFile))
+                {
+                    <h6 class="mt-4">Generated SVG Preview</h6>
+                    <div class="preview-container">
+                        <SvgRenderer FilePath="@GeneratedSVGFile" 
+                                   ContainerStyle="border: 2px solid #ddd; padding: 10px; background: white; border-radius: 5px;" />
                     </div>
                 }
-
-                <!-- Action Buttons -->
-                <div class="action-buttons mt-4">
-                    <button class="btn btn-primary" @onclick="GeneratePreview" disabled="@_validationErrors.Any()">
-                        <i class="bi bi-eye"></i> Generate Preview
-                    </button>
-                    <button class="btn btn-success" @onclick="GenerateAndSave" disabled="@_validationErrors.Any()">
-                        <i class="bi bi-download"></i> Generate & Save SVG
-                    </button>
-                    <button class="btn btn-secondary" @onclick="CreateNewInstance">
-                        <i class="bi bi-plus"></i> New Instance
-                    </button>
-                </div>
             }
             else
             {
-                <div class="text-center p-4">
-                    <button class="btn btn-primary" @onclick="CreateNewInstance">
-                        <i class="bi bi-plus"></i> Create New Hinge Instance
-                    </button>
+                <div class="placeholder-content">
+                    <div class="text-center text-muted p-5">
+                        <i class="display-1">🧠</i>
+                        <h5>Knowledge-Based Generator</h5>
+                        <p>Select a preset and create a hinge instance to see intelligent parameter calculations.</p>
+                        <small>Uses AI-driven knowledge base for optimized hinge configurations.</small>
+                    </div>
                 </div>
             }
         </div>
     </div>
-
-    <!-- Preview Section -->
-    @if (!string.IsNullOrEmpty(_previewSvg))
-    {
-        <div class="card mt-4">
-            <div class="card-header">
-                <h5 class="mb-0">Preview</h5>
-            </div>
-            <div class="card-body text-center">
-                @((MarkupString)_previewSvg)
-            </div>
-        </div>
-    }
 </div>
 
 <style>
-    .knowledge-hinge-generator .parameter-grid {
-        background: #f8f9fa;
+    .knowledge-hinge-generator-container {
         padding: 20px;
-        border-radius: 8px;
+    }
+
+    .knowledge-hinge-details {
+        background-color: #f8f9fa;
         border: 1px solid #dee2e6;
-    }
-
-    .knowledge-hinge-generator .calculated-values {
-        background: #e7f3ff;
-        padding: 15px;
         border-radius: 8px;
-        border: 1px solid #b3d7ff;
+        padding: 15px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        max-height: 400px;
+        overflow-y: auto;
+        white-space: pre-wrap;
     }
 
-    .knowledge-hinge-generator .calc-value-card {
-        display: flex;
-        flex-direction: column;
-        background: white;
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .knowledge-hinge-generator .calc-label {
-        font-size: 0.8em;
-        color: #666;
-        margin-bottom: 4px;
-    }
-
-    .knowledge-hinge-generator .calc-value {
-        font-weight: bold;
-        color: #0056b3;
-        font-size: 1.1em;
-    }
-
-    .knowledge-hinge-generator .action-buttons {
-        text-align: center;
+    .preview-container {
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
         padding: 15px;
         background: #f8f9fa;
+        text-align: center;
+    }
+
+    .placeholder-content {
+        border: 2px dashed #dee2e6;
         border-radius: 8px;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
     }
 
-    .knowledge-hinge-generator .action-buttons .btn {
-        margin: 0 5px;
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.9rem;
     }
 
-    .knowledge-hinge-generator .form-control-color {
-        width: 100%;
-        height: 38px;
+    .form-control, .form-select {
+        border-radius: 6px;
+        font-size: 0.9rem;
     }
 </style>
