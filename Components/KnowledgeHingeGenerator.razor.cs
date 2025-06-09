@@ -8,7 +8,6 @@ namespace SVGRender.Components
     public partial class KnowledgeHingeGenerator : ComponentBase
     {
         [Inject] private KnowledgeHingeService KnowledgeService { get; set; } = default!;
-        [Inject] private LivingHingeService HingeService { get; set; } = default!;
         [Parameter] public EventCallback<string> OnFileGenerated { get; set; }
 
         protected string SelectedPreset { get; set; } = "";

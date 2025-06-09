@@ -11,11 +11,6 @@ namespace SVGRender.Knowledge
     {
         public LivingHingeConcept() : base("LivingHinge")
         {
-            InitializeHingeKnowledge();
-        }
-
-        private void InitializeHingeKnowledge()
-        {
             // Define calculation formulas for hinge parameters
             // These will automatically create KnVariable objects            
             Calculations([

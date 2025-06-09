@@ -1,31 +1,8 @@
 @using SVGRender.Components
 
 <div class="svg-selector-container">
-    <!-- Living Hinge Generator Section -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="mb-0">🔧 Parametric Living Hinge Generator</h3>
-                </div>                <div class="card-body">                    <LivingHingeGenerator OnFileGenerated="OnHingeGenerated" />
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Knowledge-Based Hinge Generator Section -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="mb-0">🧠 Knowledge-Based Living Hinge Generator</h3>
-                </div>
-                <div class="card-body">
-                    <KnowledgeHingeGenerator OnFileGenerated="OnHingeGenerated" />
-                </div>
-            </div>
-        </div>
-    </div>    <!-- SVG File Selector Section -->
+    <!-- SVG File Selector Section -->
     <div class="row mb-4">
         <div class="col-md-6">
             <h3>SVG File Selector</h3>
@@ -57,8 +34,10 @@
             }
         </div>
         
-        <div class="col-md-6">            @if (!string.IsNullOrEmpty(SelectedSvgFile))
-            {                <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="col-md-6">            
+            @if (!string.IsNullOrEmpty(SelectedSvgFile))
+            {                
+                <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4>Preview: @(AllAvailableFiles.ContainsKey(SelectedSvgFile) ? AllAvailableFiles[SelectedSvgFile] : SelectedSvgFile)</h4>
                     <a href="@SelectedSvgFile" download="@GetDownloadFileName()" class="btn btn-primary btn-sm" title="Download SVG file">
                         <i class="bi bi-download"></i> Download SVG
@@ -76,7 +55,8 @@
                     <i class="display-1">🎨</i>
                     <p>Select an SVG file to see the preview</p>
                 </div>
-            }        </div>
+            }        
+            </div>
     </div>
 </div>
 

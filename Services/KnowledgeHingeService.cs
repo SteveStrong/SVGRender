@@ -14,24 +14,13 @@ namespace SVGRender.Services
 
         public KnowledgeHingeService()
         {
-            InitializeKnowledgeModel();
+            _hingeModel = new KnModel("LivingHingeModel");
+            
+            // Create the living hinge concept
+            _hingeConcept = new LivingHingeConcept();
         }
 
-        private void InitializeKnowledgeModel()
-        {
-            try
-            {
-                // Create the main hinge model
-                _hingeModel = new KnModel("LivingHingeModel");
-                
-                // Create the living hinge concept
-                _hingeConcept = new LivingHingeConcept();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to initialize knowledge model: {ex.Message}");
-            }
-        }
+
 
         /// <summary>
         /// Creates a new living hinge component instance
@@ -59,22 +48,7 @@ namespace SVGRender.Services
             }
         }
 
-        /// <summary>
-        /// Finds a specific hinge instance by name
-        /// </summary>
-        public LivingHingeComponent? FindHingeInstance(string name)
-        {
-            if (_hingeModel == null) return null;
 
-            try
-            {
-                return _hingeModel.Establish<LivingHingeComponent>(name);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
 
         /// <summary>
         /// Creates a preset hinge configuration

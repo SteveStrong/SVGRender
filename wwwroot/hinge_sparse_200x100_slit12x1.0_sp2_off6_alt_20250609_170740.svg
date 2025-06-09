@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Living Hinge Pattern - Parametric Generation
-  Generated: 2025-05-28 23:04:49
+  Generated: 2025-06-09 17:07:40
   All measurements in millimeters (mm)
   
   Parameters:
-    - Type: Standard
+    - Type: Sparse
     - Dimensions: 200mm × 100mm
     - Slit Length: 20mm
     - Slit Width: 1mm
@@ -53,7 +53,7 @@
   <line x1="115.0" y1="46.0" x2="135.0" y2="46.0" class="cut-line" />
   <line x1="140.0" y1="46.0" x2="160.0" y2="46.0" class="cut-line" />
   <line x1="165.0" y1="46.0" x2="185.0" y2="46.0" class="cut-line" />
-  <text x="5" y="75" class="hinge-info">Living Hinge - Standard (200×100mm)</text>
+  <text x="5" y="75" class="hinge-info">Living Hinge - Sparse (200×100mm)</text>
   <text x="5" y="85" class="hinge-info">Slit: 20×1mm, Spacing: 5mm, Row Offset: 12mm</text>
-  <text x="5" y="95" class="hinge-info">Generated: 2025-05-28 23:04:49 | Alternate Rows: Yes</text>
+  <text x="5" y="95" class="hinge-info">Generated: 2025-06-09 17:07:40 | Alternate Rows: Yes</text>
 </svg>
